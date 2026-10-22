@@ -1,1 +1,0 @@
-"""Reproducible sensor fidelity analysis."""

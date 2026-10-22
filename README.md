@@ -1,35 +1,9 @@
-# Sensor fidelity — lag-corrected exploratory analysis
+# Spectral to Reynolds
 
-One interactive notebook plus reusable `src/sensor_fidelity` functions. `config.json` lives at the project root.
+Install dependencies: `pip install -r requirements.txt`. Open `notebooks/spectral_to_reynolds.ipynb` and run from top to bottom.
 
-## Layout
+Place the eight existing CSV files under `data/2026-03-04/`; this archive does **not** contain the source data or your previously trained checkpoint. All paths/settings are in `config.json`.
 
-- `config.json`:   file names, selected source, frequency bands, lag range, input/output paths.
-- `data/August_Records/`: raw CSV recordings (not committed).
-- `notebooks/sensor_fidelity_analysis.ipynb`: **interactive** matching, lag search, autocorrelation, before/after EDA, frequency ranking, annotated heatmaps, overlays, temporal-trend diagnostics.
-- `src/sensor_fidelity/`: pure data processing and metric functions, plus optional plotting helpers.
-- `results/<source>/`: generated CSVs (not committed).
-- `run.py`: optional headless numerical pipeline; **does not create figures**.
+The notebook calls `src/spectral_to_reynolds` for CSV cleaning, windowing, training, evaluation, and inference. Running the search writes `results/compact_gru_search.csv` and the selected e24/h16 checkpoint under `models/`. It does not overwrite the existing e16/h24 checkpoint.
 
-## Run
-
-From the project root:
-
-```bash
-pip install -r requirements.txt
-jupyter notebook notebooks/sensor_fidelity_analysis.ipynb
-```
-
-Run the notebook cells top-to-bottom. Choose `SOURCE_OVERRIDE = None` to use the `selected_source` in `config.json`, or set it to `"source_USB"`.
-
-**Path resolution:** `data_dir` and `output_dir` are resolved relative to the directory containing `config.json`, never the Jupyter process working directory. If your project root is `/home/ubuntu/notebooks/Leak_Detection`, `data_dir: data/August_Records` resolves to `/home/ubuntu/notebooks/Leak_Detection/data/August_Records`.
-
-Optional headless numerical run:
-
-```bash
-python run.py --source source
-```
-
-## Analysis conventions
-
-`source(t)` versus `sensor(t+lag)`, using actual timestamp joins. Select one lag per sensor by maximizing mean Pearson correlation over all 27 frequencies. Compare zero and corrected lags on the same source-time interval. Individual frequency best lags are diagnostic only. Autocorrelation peaks can create multiple cross-correlation peaks; estimates are descriptive until validated independently.
+**Important:** the original notebook's model save cell chose the lowest-RMSE model (e16/h24), while the report selected e24/h16 for the size/MAE trade-off. This repository saves the explicitly configured e24/h16 model. Data loading retains the original row-index alignment and zero-filling behavior; it does not filter leak periods.
