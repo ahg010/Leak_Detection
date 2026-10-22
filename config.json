@@ -1,0 +1,62 @@
+{
+  "data_dir": "data/August_Records",
+  "output_dir": "results",
+  "selected_source": "source",
+  "files": {
+    "source": "Source_2026-08-19T15_02_47.csv",
+    "source_USB": "USBmic_2026-08-19T15_02_47.csv",
+    "Thing01": "Thing01-1s10-2026-08-19.csv",
+    "Thing02": "Thing02-1s10-2026-08-19.csv",
+    "Thing03": "Thing03-1s10-2026-08-19.csv"
+  },
+  "sensors": [
+    "Thing01",
+    "Thing02",
+    "Thing03"
+  ],
+  "freq_cols": [
+    "f25",
+    "f31_5",
+    "f40",
+    "f50",
+    "f63",
+    "f80",
+    "f100",
+    "f125",
+    "f160",
+    "f200",
+    "f250",
+    "f315",
+    "f400",
+    "f500",
+    "f630",
+    "f800",
+    "f1000",
+    "f1250",
+    "f1600",
+    "f2000",
+    "f2500",
+    "f3100",
+    "f4000",
+    "f5000",
+    "f6300",
+    "f8000",
+    "f10000"
+  ],
+  "preprocessing": {
+    "skip_first_rows": 10,
+    "timestamp_column": "receipt_time"
+  },
+  "lag_analysis": {
+    "min_lag_seconds": 0,
+    "max_lag_seconds": 30,
+    "min_pairs": 20,
+    "selection_metric": "mean_pearson",
+    "common_lag_per_sensor": true
+  },
+  "eda": {
+    "smoothing_window": 5,
+    "amplitude_units": "unknown",
+    "generate_frequency_plots": true
+  }
+}
