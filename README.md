@@ -4,7 +4,7 @@ One interactive notebook plus reusable `src/sensor_fidelity` functions. `config.
 
 ## Layout
 
-- `config.json`: file names, selected source, frequency bands, lag range, input/output paths.
+- `config.json`:   file names, selected source, frequency bands, lag range, input/output paths.
 - `data/August_Records/`: raw CSV recordings (not committed).
 - `notebooks/sensor_fidelity_analysis.ipynb`: **interactive** matching, lag search, autocorrelation, before/after EDA, frequency ranking, annotated heatmaps, overlays, temporal-trend diagnostics.
 - `src/sensor_fidelity/`: pure data processing and metric functions, plus optional plotting helpers.
