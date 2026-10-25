@@ -2,7 +2,6 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 *.pyc
-results/*
 !results/.gitkeep
 data/August_Records/*
 !data/August_Records/.gitkeep
