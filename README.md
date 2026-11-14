@@ -1,9 +1,38 @@
-# Spectral to Reynolds
+# Acoustic Pipeline Leak Detection — Analysis Notebooks
 
-Install dependencies: `pip install -r requirements.txt`. Open `notebooks/spectral_to_reynolds.ipynb` and run from top to bottom.
+## 1. Create the analysis dataset
 
-Place the eight existing CSV files under `data/2026-03-04/`; this archive does **not** contain the source data or your previously trained checkpoint. All paths/settings are in `config.json`.
+From the **repository root**, run:
 
-The notebook calls `src/spectral_to_reynolds` for CSV cleaning, windowing, training, evaluation, and inference. Running the search writes `results/compact_gru_search.csv` and the selected e24/h16 checkpoint under `models/`. It does not overwrite the existing e16/h24 checkpoint.
+```bash
+python src/convert_probe_data_to_segments_matched.py data/2026-03-04 data/all_segments.csv
+```
 
-**Important:** the original notebook's model save cell chose the lowest-RMSE model (e16/h24), while the report selected e24/h16 for the size/MAE trade-off. This repository saves the explicitly configured e24/h16 model. Data loading retains the original row-index alignment and zero-filling behavior; it does not filter leak periods.
+- **Input:** `data/2026-03-04/` — original acoustic probe CSV files.
+- **Output:** `data/all_segments.csv`.
+- **Script:** `src/convert_probe_data_to_segments_matched.py` (the timestamp-matched version).
+- **Dataset:** One row per run, matched timestamp, and adjacent probe pair (`UUS-US`, `US-DS`, or `DS-DDS`). Includes signed upstream-minus-downstream frequency amplitudes, Reynolds level, and leak-event information. The script retains the full observation period and matches timestamps across each segment's two probes.
+
+## 2. Leak detection approaches and corresponding notebooks
+
+| # | Approach | Latest corresponding notebook |
+|---|---|---|
+| 1 | LSTM (original) | |
+| 2 | CUSUM / Change-Point Detection | |
+| 3 | Difference-in-Differences (DiD) | `first_leak_frequency_analysis_DiD_posthealthy.ipynb` |
+| 4 | ABA Analysis | `first_leak_frequency_sensitivity_ABA.ipynb` |
+| 5 | Median-Based Leak Analysis | `segment_reynolds_level_and_change_vs_first_leak_SETTLED_SAMPLES_FIXED_v1.ipynb` |
+| 6 | Reynolds LEVEL Correlation | `segment_reynolds_level_and_change_vs_first_leak_SETTLED_SAMPLES_FIXED_v1.ipynb` |
+| 7 | Reynolds TRANSITION Analysis | `segment_reynolds_level_and_change_vs_first_leak_SETTLED_SAMPLES_FIXED_v1.ipynb` |
+| 8 | Immediate Onset-Jump Analysis | `event_aligned_IMMEDIATE_ONSET_jumps_VALID_RECOVERY.ipynb` |
+| 9 | Jump Recovery + Healthy Comparison | `event_aligned_IMMEDIATE_ONSET_jumps_VALID_RECOVERY.ipynb` |
+
+*Blank notebook entries mean the corresponding LSTM and CUSUM filenames were not identifiable in the supplied notebook list.*
+
+## 3. Selected approach
+
+**Selected method:** Immediate onset-jump analysis with recovery and healthy-event comparisons.
+
+**Selected notebook:** `event_aligned_IMMEDIATE_ONSET_jumps_VALID_RECOVERY.ipynb`
+
+This is the final approach selected from the analyses above. Its results were the most promising in the exploratory comparisons, but leak detection performance and false-positive rates have **not** been conclusively validated.
